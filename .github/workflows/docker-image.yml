@@ -32,4 +32,5 @@ jobs:
           push: true
           # tags: latest
           # tags: ${{ steps.meta.outputs.tags }}
+          tags: docker.red-panda.red/test-server:latest
           labels: ${{ steps.meta.outputs.labels }}
