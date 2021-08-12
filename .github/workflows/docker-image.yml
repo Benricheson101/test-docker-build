@@ -1,25 +1,16 @@
-name: Docker Image CI
+name: Publish Docker image
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  release:
+    types: [published]
 
 jobs:
-
-  build:
-
+  push_to_registry:
+    name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-
     steps:
-    # - uses: actions/checkout@v2
-    # - name: Build the Docker image
-    #   run: |
-    #     docker login https://docker.red-panda.red --password ${{ SECRETS.DOCKER_PASSWORD }} --username ${{ SECRETS.DOCKER_username }}
-    #     name=$(docker.red-panda.red/test-docker-build:$(date +%s))
-    #     docker build . --file Dockerfile --tag $name
-    #     docker push $name
+      - name: Check out the repo
+        uses: actions/checkout@v2
 
       - name: Log in to Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -32,17 +23,10 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: |
-            ${{ github.repository }}
+          images: my-docker-hub-namespace/test-server
 
-      - name: Setup a thing
-        run: |
-          export DOCKER_BUILDKIT=0
-          export COMPOSE_DOCKER_CLI_BUILD=0
-
-      - name: Build and push Docker images
+      - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-
         with:
           context: .
           push: true
