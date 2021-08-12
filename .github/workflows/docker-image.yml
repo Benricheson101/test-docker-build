@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: |
+        docker login https://docker.red-panda.red --password ${{ SECRETS.DOCKER_PASSWORD }} --username ${{ SECRETS.DOCKER_username }}
+        name=$(docker.red-panda.red/test-docker-build:$(date +%s))
+        docker build . --file Dockerfile --tag $name
+        docker push $name
